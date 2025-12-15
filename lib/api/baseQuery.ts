@@ -1,19 +1,18 @@
-
-import { fetchBaseQuery } from '@reduxjs/toolkit/query';
+import { fetchBaseQuery } from "@reduxjs/toolkit/query";
 import type {
   BaseQueryFn,
   FetchArgs,
   FetchBaseQueryError,
-} from '@reduxjs/toolkit/query';
-import { setTokens, logout } from '../features/auth/authSlice';
-import type { RootState } from '../store'; // This will be created later
+} from "@reduxjs/toolkit/query";
+import { setTokens, logout } from "../features/auth/authSlice";
+import type { RootState } from "../store"; // This will be created later
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'http://localhost:3000/api', // TODO: use env variable
+  baseUrl: "http://localhost:3000", // TODO: use env variable
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.accessToken;
     if (token) {
-      headers.set('authorization', `Bearer ${token}`);
+      headers.set("authorization", `Bearer ${token}`);
     }
     return headers;
   },
@@ -28,8 +27,8 @@ export const baseQueryWithReauth: BaseQueryFn<
   if (result.error && result.error.status === 401) {
     const refreshResult = await baseQuery(
       {
-        url: '/auth/refresh',
-        method: 'POST',
+        url: "/auth/refresh",
+        method: "POST",
         headers: {
           authorization: `Bearer ${(api.getState() as RootState).auth.refreshToken}`,
         },
@@ -39,9 +38,15 @@ export const baseQueryWithReauth: BaseQueryFn<
     );
 
     if (refreshResult.data) {
-      const newAccessToken = (refreshResult.data as { accessToken: string }).accessToken;
+      const newAccessToken = (refreshResult.data as { accessToken: string })
+        .accessToken;
       const newRefreshToken = (api.getState() as RootState).auth.refreshToken!;
-      api.dispatch(setTokens({ accessToken: newAccessToken, refreshToken: newRefreshToken }));
+      api.dispatch(
+        setTokens({
+          accessToken: newAccessToken,
+          refreshToken: newRefreshToken,
+        })
+      );
       result = await baseQuery(args, api, extraOptions);
     } else {
       api.dispatch(logout());
