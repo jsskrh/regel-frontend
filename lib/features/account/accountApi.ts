@@ -1,19 +1,28 @@
 import { apiSlice } from "../../api/apiSlice";
 import { UpdateOnboardingDto } from "./types";
 
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  balance: number;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  role: string; // This is a role ID for now, I'll assume it's "admin" string later
+}
+
 export const accountApi = apiSlice.injectEndpoints({
   endpoints: (build) => ({
     getProfile: build.query<GetProfileApiResponse, GetProfileApiArg>({
       query: () => ({ url: `/account/profile` }),
     }),
-
     getOnboardingDetails: build.query<
       GetOnboardingDetailsApiResponse,
       GetOnboardingDetailsApiArg
     >({
       query: () => ({ url: `/account/onboarding` }),
     }),
-
     updateOnboardingDetails: build.mutation<
       UpdateOnboardingDetailsApiResponse,
       UpdateOnboardingDetailsApiArg
@@ -24,7 +33,6 @@ export const accountApi = apiSlice.injectEndpoints({
         body: queryArg.updateOnboardingDto,
       }),
     }),
-
     generateUploadUrl: build.query<
       GenerateUploadUrlApiResponse,
       GenerateUploadUrlApiArg
@@ -37,14 +45,12 @@ export const accountApi = apiSlice.injectEndpoints({
         },
       }),
     }),
-
     getTransactions: build.query<
       GetTransactionsApiResponse,
       GetTransactionsApiArg
     >({
       query: () => ({ url: `/account/transactions` }),
     }),
-
     generateApiKey: build.mutation<
       GenerateApiKeyApiResponse,
       GenerateApiKeyApiArg
@@ -63,8 +69,7 @@ export const {
   useGenerateApiKeyMutation,
 } = accountApi;
 
-export type GetProfileApiResponse =
-  /** status 200 User profile retrieved. */ any;
+export type GetProfileApiResponse = User;
 export type GetProfileApiArg = void;
 export type GetOnboardingDetailsApiResponse = unknown;
 export type GetOnboardingDetailsApiArg = void;

@@ -7,6 +7,12 @@ import {
   CreatePermissionDto,
 } from "./types";
 
+export interface Role {
+  _id: string;
+  name: string;
+  permissions: string[];
+}
+
 export const adminApi = apiSlice.injectEndpoints({
   endpoints: (build) => ({
     getActiveProvider: build.query<
@@ -164,7 +170,7 @@ export type CreateRoleApiResponse = unknown;
 export type CreateRoleApiArg = {
   createRoleDto: CreateRoleDto;
 };
-export type FindAllRolesApiResponse = unknown;
+export type FindAllRolesApiResponse = Role[];
 export type FindAllRolesApiArg = void;
 export type UpdateRoleApiResponse = unknown;
 export type UpdateRoleApiArg = {
