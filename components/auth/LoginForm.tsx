@@ -64,7 +64,7 @@ export function LoginForm() {
           })
         );
         toast.success("Login successful!");
-        router.push("/dashboard");
+        router.push("/auth/callback");
       }
     } catch (err) {
       if (err instanceof z.ZodError) {

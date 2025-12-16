@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { cn } from "@/lib/utils";
-import Sidebar from "./Sidebar";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -44,8 +43,6 @@ const Nav = () => {
 
   return (
     <div className="grid justify-items-end">
-      {isAuthenticated && <Sidebar />}
-
       <div className="max-lg:hidden flex items-center">
         {!isAuthenticated ? (
           <>

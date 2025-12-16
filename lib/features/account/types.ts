@@ -1,15 +1,29 @@
 
+export interface Transaction {
+    _id: string;
+    userId: string;
+    status: string;
+    reference: string;
+    currency: string;
+    amount: number;
+    createdAt: string;
+  }
+
+export interface OnboardingDetails {
+    company?: string;
+    website?: string;
+    cacDocumentUrl?: string;
+    samplePromotionalMessage?: string;
+    sampleTransactionalMessage?: string;
+    estimatedMonthlySms?: number;
+    isComplete: boolean; // Assuming there is a flag for completion
+}
+
 export type UpdateOnboardingDto = {
-  /** The user's company name */
-  company?: string;
-  /** The company's website URL */
-  website?: string;
-  /** URL to the uploaded CAC document */
-  cacDocumentUrl?: string;
-  /** Sample promotional SMS message */
-  samplePromotionalMessage?: string;
-  /** Sample transactional SMS message */
-  sampleTransactionalMessage?: string;
-  /** Estimated monthly SMS volume */
-  estimatedMonthlySms?: number;
+    company?: string;
+    website?: string;
+    cacDocumentUrl?: string;
+    samplePromotionalMessage?: string;
+    sampleTransactionalMessage?: string;
+    estimatedMonthlySms?: number;
 };

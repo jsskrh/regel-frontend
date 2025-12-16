@@ -5,7 +5,16 @@ import {
   UpdateContactListDto,
   CreateContactDto,
   UpdateContactDto,
+  Contact
 } from "./types";
+
+export interface ContactList {
+  _id: string;
+  name: string;
+  description?: string;
+  avatar?: string; // Optional avatar
+  contacts: string[]; // Changed from contactIds
+}
 
 export const contactsApi = apiSlice.injectEndpoints({
   endpoints: (build) => ({
@@ -14,6 +23,7 @@ export const contactsApi = apiSlice.injectEndpoints({
       FindAllContactListsApiArg
     >({
       query: () => ({ url: `/contacts/lists` }),
+      providesTags: ["ContactLists"],
     }),
 
     createContactList: build.mutation<
@@ -25,6 +35,7 @@ export const contactsApi = apiSlice.injectEndpoints({
         method: "POST",
         body: queryArg.createContactListDto,
       }),
+      invalidatesTags: ["ContactLists"],
     }),
 
     addContactsToList: build.mutation<
@@ -36,6 +47,7 @@ export const contactsApi = apiSlice.injectEndpoints({
         method: "POST",
         body: queryArg.addRemoveContactsToListDto,
       }),
+      invalidatesTags: ["ContactLists"],
     }),
 
     removeContactsFromList: build.mutation<
@@ -47,6 +59,7 @@ export const contactsApi = apiSlice.injectEndpoints({
         method: "DELETE",
         body: queryArg.addRemoveContactsToListDto,
       }),
+      invalidatesTags: ["ContactLists"],
     }),
 
     findContactListById: build.query<
@@ -65,6 +78,7 @@ export const contactsApi = apiSlice.injectEndpoints({
         method: "PATCH",
         body: queryArg.updateContactListDto,
       }),
+      invalidatesTags: ["ContactLists"],
     }),
 
     deleteContactList: build.mutation<
@@ -75,6 +89,7 @@ export const contactsApi = apiSlice.injectEndpoints({
         url: `/contacts/lists/${queryArg.id}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["ContactLists"],
     }),
 
     findAllContacts: build.query<
@@ -82,6 +97,7 @@ export const contactsApi = apiSlice.injectEndpoints({
       FindAllContactsApiArg
     >({
       query: () => ({ url: `/contacts` }),
+      providesTags: ["Contacts"],
     }),
 
     createContact: build.mutation<
@@ -93,6 +109,7 @@ export const contactsApi = apiSlice.injectEndpoints({
         method: "POST",
         body: queryArg.createContactDto,
       }),
+      invalidatesTags: ["Contacts"],
     }),
 
     findContactById: build.query<
@@ -111,6 +128,7 @@ export const contactsApi = apiSlice.injectEndpoints({
         method: "PATCH",
         body: queryArg.updateContactDto,
       }),
+      invalidatesTags: ["Contacts"],
     }),
 
     deleteContact: build.mutation<
@@ -121,6 +139,7 @@ export const contactsApi = apiSlice.injectEndpoints({
         url: `/contacts/${queryArg.id}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["Contacts"],
     }),
   }),
 });
@@ -140,7 +159,7 @@ export const {
   useDeleteContactMutation,
 } = contactsApi;
 
-export type FindAllContactListsApiResponse = unknown;
+export type FindAllContactListsApiResponse = ContactList[];
 export type FindAllContactListsApiArg = void;
 export type CreateContactListApiResponse = unknown;
 export type CreateContactListApiArg = {
@@ -169,7 +188,7 @@ export type DeleteContactListApiResponse = unknown;
 export type DeleteContactListApiArg = {
   id: string;
 };
-export type FindAllContactsApiResponse = unknown;
+export type FindAllContactsApiResponse = Contact[];
 export type FindAllContactsApiArg = void;
 export type CreateContactApiResponse = unknown;
 export type CreateContactApiArg = {

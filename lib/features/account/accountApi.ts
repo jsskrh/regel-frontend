@@ -1,37 +1,29 @@
 import { apiSlice } from "../../api/apiSlice";
-import { UpdateOnboardingDto } from "./types";
+import { UpdateOnboardingDto, OnboardingDetails, Transaction } from "./types";
+import { User } from "./accountApi";
 
-export interface User {
-  _id: string;
-  name: string;
-  email: string;
-  balance: number;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-  role: string; // This is a role ID for now, I'll assume it's "admin" string later
+export interface GetTransactionsApiResponse {
+    data: Transaction[];
+    total: number;
 }
 
 export const accountApi = apiSlice.injectEndpoints({
   endpoints: (build) => ({
-    getProfile: build.query<GetProfileApiResponse, GetProfileApiArg>({
+    getAccount: build.query<User, void>({
       query: () => ({ url: `/account/profile` }),
+      providesTags: ["Account"],
     }),
-    getOnboardingDetails: build.query<
-      GetOnboardingDetailsApiResponse,
-      GetOnboardingDetailsApiArg
-    >({
+    getOnboardingDetails: build.query<OnboardingDetails, void>({
       query: () => ({ url: `/account/onboarding` }),
+      providesTags: ["Onboarding"],
     }),
-    updateOnboardingDetails: build.mutation<
-      UpdateOnboardingDetailsApiResponse,
-      UpdateOnboardingDetailsApiArg
-    >({
+    updateOnboardingDetails: build.mutation<void, { updateOnboardingDto: UpdateOnboardingDto }>({
       query: (queryArg) => ({
         url: `/account/onboarding`,
         method: "PATCH",
         body: queryArg.updateOnboardingDto,
       }),
+      invalidatesTags: ["Onboarding", "Account"], // Invalidate account to get updated onboarding status
     }),
     generateUploadUrl: build.query<
       GenerateUploadUrlApiResponse,
@@ -50,6 +42,7 @@ export const accountApi = apiSlice.injectEndpoints({
       GetTransactionsApiArg
     >({
       query: () => ({ url: `/account/transactions` }),
+      providesTags: ["Transactions"],
     }),
     generateApiKey: build.mutation<
       GenerateApiKeyApiResponse,
@@ -61,7 +54,7 @@ export const accountApi = apiSlice.injectEndpoints({
 });
 
 export const {
-  useGetProfileQuery,
+  useGetAccountQuery,
   useGetOnboardingDetailsQuery,
   useUpdateOnboardingDetailsMutation,
   useGenerateUploadUrlQuery,
@@ -69,9 +62,9 @@ export const {
   useGenerateApiKeyMutation,
 } = accountApi;
 
-export type GetProfileApiResponse = User;
-export type GetProfileApiArg = void;
-export type GetOnboardingDetailsApiResponse = unknown;
+export type GetAccountApiResponse = User;
+export type GetAccountApiArg = void;
+export type GetOnboardingDetailsApiResponse = OnboardingDetails;
 export type GetOnboardingDetailsApiArg = void;
 export type UpdateOnboardingDetailsApiResponse = unknown;
 export type UpdateOnboardingDetailsApiArg = {
@@ -88,7 +81,6 @@ export type GenerateUploadUrlApiArg = {
   /** The MIME type of the file to be uploaded. */
   fileType: string;
 };
-export type GetTransactionsApiResponse = unknown;
 export type GetTransactionsApiArg = void;
 export type GenerateApiKeyApiResponse =
   /** status 200 New API key generated. Store it securely! */ {

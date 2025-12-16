@@ -108,19 +108,11 @@ export const adminApi = apiSlice.injectEndpoints({
       query: () => ({ url: `/admin/stats` }),
     }),
 
-    getTransactions: build.query<
+    getAllTransactions: build.query<
       GetTransactionsApiResponse,
       GetTransactionsApiArg
     >({
       query: () => ({ url: `/admin/transactions` }),
-    }),
-
-    getMessages: build.query<GetMessagesApiResponse, GetMessagesApiArg>({
-      query: () => ({ url: `/admin/messages` }),
-    }),
-
-    getCampaigns: build.query<GetCampaignsApiResponse, GetCampaignsApiArg>({
-      query: () => ({ url: `/admin/campaigns` }),
     }),
   }),
 });
@@ -139,9 +131,7 @@ export const {
   useCreatePermissionMutation,
   useFindAllPermissionsQuery,
   useGetDashboardStatsQuery,
-  useGetTransactionsQuery,
-  useGetMessagesQuery,
-  useGetCampaignsQuery,
+  useGetAllTransactionsQuery,
 } = adminApi;
 
 export type GetActiveProviderApiResponse = unknown;
@@ -190,12 +180,5 @@ export type FindAllPermissionsApiArg = void;
 export type GetDashboardStatsApiResponse =
   /** status 200 Dashboard statistics retrieved. */ any;
 export type GetDashboardStatsApiArg = void;
-export type GetTransactionsApiResponse =
-  /** status 200 Paginated transactions retrieved. */ any;
+export type GetAllTransactionsApiResponse = unknown;
 export type GetTransactionsApiArg = void;
-export type GetMessagesApiResponse =
-  /** status 200 Paginated messages retrieved. */ any;
-export type GetMessagesApiArg = void;
-export type GetCampaignsApiResponse =
-  /** status 200 Paginated campaigns retrieved. */ any;
-export type GetCampaignsApiArg = void;

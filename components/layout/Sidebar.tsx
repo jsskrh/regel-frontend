@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetProfileQuery, User } from "@/lib/features/account/accountApi";
+import { useGetAccountQuery, User } from "@/lib/features/account/accountApi";
 import { useFindAllRolesQuery, Role } from "@/lib/features/admin/adminApi";
 import Image from "next/image";
 import Link from "next/link";
@@ -24,22 +24,22 @@ const nav = [
     items: [
       {
         title: "Registered contacts",
-        path: "/clients/contacts",
+        path: "/contacts",
         icon: "mail-check.svg",
       },
       {
         title: "Add new contacts",
-        path: "/clients/contacts/add",
+        path: "/contacts/add",
         icon: "user.svg",
       },
       {
         title: "Groups",
-        path: "/clients/contacts/groups",
+        path: "/contacts/groups",
         icon: "user-group.svg",
       },
       {
         title: "Add new group",
-        path: "/clients/contacts/groups/add",
+        path: "/contacts/groups/add",
         icon: "users.svg",
       },
     ],
@@ -49,19 +49,24 @@ const nav = [
     items: [
       {
         title: "Create new sms",
-        path: "/clients/sms/send",
+        path: "/sms/send",
         icon: "mail-add.svg",
       },
       {
         title: "Create new otp",
-        path: "/clients/otp/send",
+        path: "/otp/send",
         icon: "mail-add.svg",
       },
       { title: "Inbox", path: "/inbox", icon: "message-alt.svg" },
       {
         title: "Sent items",
-        path: "/clients/sms",
+        path: "/sms",
         icon: "send-alt.svg",
+      },
+      {
+        title: "Sender IDs",
+        path: "/sender-ids",
+        icon: "message-square.svg", // Placeholder icon, replace with a more suitable one if available
       },
     ],
   },
@@ -70,7 +75,7 @@ const nav = [
     items: [
       {
         title: "Billing information",
-        path: "/billings",
+        path: "/billing",
         icon: "receipt.svg",
       },
       { title: "Settings", path: "/dashboard", icon: "settings.svg" },
@@ -98,7 +103,7 @@ const Sidebar = () => {
     data: user,
     isLoading: isUserLoading,
     error: userError,
-  } = useGetProfileQuery();
+  } = useGetAccountQuery();
   const {
     data: roles,
     isLoading: isRolesLoading,
