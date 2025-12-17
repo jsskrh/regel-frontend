@@ -73,6 +73,59 @@ const CardFooter = React.forwardRef<
 ));
 CardFooter.displayName = "CardFooter";
 
+const CardDetails = React.forwardRef(
+  (
+    {
+      className,
+      title,
+      description,
+      footer,
+      icon: Icon,
+      iconColor,
+      children,
+      ...props
+    },
+    ref
+  ) => (
+    <div
+      ref={ref}
+      className={cn(
+        "rounded-lg border border-border bg-card text-card-foreground shadow-sm",
+        className
+      )}
+      {...props}
+    >
+      {/* Header section */}
+      {[title, description, Icon].some(Boolean) && (
+        <div className=" flex flex-col space-y-1 p-6">
+          <div className="flex flex-row items-center justify-between space-y-0 pb-0">
+            {title && (
+              <h3 className="text-sm font-semibold leading-none tracking-tight">
+                {title}
+              </h3>
+            )}
+            {Icon && <Icon className={`h-6 w-6 ${iconColor}`} />}
+            {/* Render icon component */}
+          </div>
+
+          {description && (
+            <p className={cn("text-sm text-muted-foreground")}>{description}</p>
+          )}
+        </div>
+      )}
+
+      {/* Main content section */}
+      <div className="p-6 pt-0">{children}</div>
+
+      {/* Footer section */}
+      {footer && (
+        <div className={cn("flex items-center p-6 pt-0")}>{footer}</div>
+      )}
+    </div>
+  )
+);
+CardDetails.displayName = "CardDetails";
+
 export {
   Card,
   CardHeader,
@@ -80,4 +133,5 @@ export {
   CardTitle,
   CardDescription,
   CardContent,
+  CardDetails,
 };

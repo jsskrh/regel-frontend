@@ -1,3 +1,4 @@
+
 import { apiSlice } from "../../api/apiSlice";
 import {
   UpdateActiveProviderDto,
@@ -5,7 +6,12 @@ import {
   CreateRoleDto,
   UpdateRoleDto,
   CreatePermissionDto,
+  DashboardStats,
+  AdminUser,
 } from "./types";
+import { User } from "../account/accountApi";
+import { Transaction } from "../payments/types";
+import { PaginatedResponse, PaginationQueryDto } from "@/lib/utils/types";
 
 export interface Role {
   _id: string;
@@ -33,8 +39,9 @@ export const adminApi = apiSlice.injectEndpoints({
       }),
     }),
 
-    getAllUsers: build.query<GetAllUsersApiResponse, GetAllUsersApiArg>({
+    getAllUsers: build.query<GetAllUsersApiResponse, void>({
       query: () => ({ url: `/admin/users` }),
+      providesTags: ["Users"],
     }),
 
     getUser: build.query<GetUserApiResponse, GetUserApiArg>({
@@ -47,6 +54,7 @@ export const adminApi = apiSlice.injectEndpoints({
         method: "PATCH",
         body: queryArg.updateUserDto,
       }),
+      invalidatesTags: ["Users"],
     }),
 
     deleteUser: build.mutation<DeleteUserApiResponse, DeleteUserApiArg>({
@@ -54,6 +62,7 @@ export const adminApi = apiSlice.injectEndpoints({
         url: `/admin/users/${queryArg.id}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["Users"],
     }),
 
     createRole: build.mutation<CreateRoleApiResponse, CreateRoleApiArg>({
@@ -109,10 +118,13 @@ export const adminApi = apiSlice.injectEndpoints({
     }),
 
     getAllTransactions: build.query<
-      GetTransactionsApiResponse,
-      GetTransactionsApiArg
+      GetAllTransactionsApiResponse,
+      GetAllTransactionsApiArg
     >({
-      query: () => ({ url: `/admin/transactions` }),
+      query: (paginationQuery) => ({
+        url: `/admin/transactions`,
+        params: paginationQuery,
+      }),
     }),
   }),
 });
@@ -140,10 +152,9 @@ export type UpdateActiveProviderApiResponse = unknown;
 export type UpdateActiveProviderApiArg = {
   updateActiveProviderDto: UpdateActiveProviderDto;
 };
-export type GetAllUsersApiResponse =
-  /** status 200 List of users retrieved. */ any;
+export type GetAllUsersApiResponse = AdminUser[];
 export type GetAllUsersApiArg = void;
-export type GetUserApiResponse = /** status 200 User details retrieved. */ any;
+export type GetUserApiResponse = AdminUser;
 export type GetUserApiArg = {
   id: string;
 };
@@ -177,8 +188,7 @@ export type CreatePermissionApiArg = {
 };
 export type FindAllPermissionsApiResponse = unknown;
 export type FindAllPermissionsApiArg = void;
-export type GetDashboardStatsApiResponse =
-  /** status 200 Dashboard statistics retrieved. */ any;
+export type GetDashboardStatsApiResponse = DashboardStats;
 export type GetDashboardStatsApiArg = void;
-export type GetAllTransactionsApiResponse = unknown;
-export type GetTransactionsApiArg = void;
+export type GetAllTransactionsApiResponse = PaginatedResponse<Transaction>;
+export type GetAllTransactionsApiArg = PaginationQueryDto;

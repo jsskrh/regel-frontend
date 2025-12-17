@@ -21,6 +21,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { FileUpload } from "@/components/common/FileUpload";
 
 const onboardingSchema = z.object({
   company: z.string().optional(),
@@ -99,7 +100,12 @@ export function OnboardingForm() {
                 </FormItem>
               )}
             />
-            {/* TODO: Add file upload for cacDocumentUrl */}
+            <FormItem>
+                <FormLabel>CAC Document</FormLabel>
+                <FileUpload onUploadSuccess={(url) => form.setValue("cacDocumentUrl", url)} />
+                {form.watch("cacDocumentUrl") && <p className="text-sm text-green-600">Document uploaded: {form.watch("cacDocumentUrl")}</p>}
+                <FormMessage />
+            </FormItem>
             <FormField
               control={form.control}
               name="samplePromotionalMessage"

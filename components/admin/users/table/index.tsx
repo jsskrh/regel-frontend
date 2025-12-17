@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -13,32 +14,25 @@ import {
   getFacetedRowModel,
   getFacetedUniqueValues,
 } from "@tanstack/react-table";
-import { useGetMessagesQuery } from "@/lib/features/messaging/messagingApi";
+import { useGetAllUsersQuery } from "@/lib/features/admin/adminApi";
 import { columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
 import { DataTableToolbar } from "@/components/ui/data-table-toolbar";
 import { DataTablePagination } from "@/components/ui/data-table-pagination";
 
-const MessagesTable = () => {
+export function UsersTable() {
+  const { data: users = [], isLoading } = useGetAllUsersQuery();
+  const [rowSelection, setRowSelection] = useState({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
   });
 
-  const { data: response, isLoading } = useGetMessagesQuery({
-    page: pagination.pageIndex + 1,
-    limit: pagination.pageSize,
-  });
-  const messages = response?.data || [];
-  const totalMessages = response?.total || 0;
-
-  const [rowSelection, setRowSelection] = useState({});
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [sorting, setSorting] = useState<SortingState>([]);
-
   const table = useReactTable({
-    data: messages,
+    data: users,
     columns,
     state: {
       sorting,
@@ -55,32 +49,21 @@ const MessagesTable = () => {
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    // Need to manually handle pagination
-    // getPaginationRowModel: getPaginationRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-    pageCount: Math.ceil(totalMessages / pagination.pageSize), // Set pageCount for manual pagination
-    manualPagination: true,
   });
 
   if (isLoading) {
-    return <p>Loading messages...</p>;
+    return <p>Loading users...</p>;
   }
 
   return (
-    <div className="mb-6 space-y-5">
-      <DataTableToolbar
-        table={table}
-        placeholder="Search SMS"
-        buttonText="Send new SMS"
-        col="body"
-        link="/sms/send"
-      />
-      <DataTable columns={columns} data={messages} table={table} />
+    <div className="space-y-4">
+      <DataTableToolbar table={table} placeholder="Search users" />
+      <DataTable data={users} columns={columns} table={table} />
       <DataTablePagination table={table} />
     </div>
   );
-};
-
-export default MessagesTable;
+}

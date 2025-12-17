@@ -1,3 +1,4 @@
+
 import { apiSlice } from "../../api/apiSlice";
 import { UpdateOnboardingDto, OnboardingDetails, Transaction } from "./types";
 import { User } from "./accountApi";
@@ -23,7 +24,7 @@ export const accountApi = apiSlice.injectEndpoints({
         method: "PATCH",
         body: queryArg.updateOnboardingDto,
       }),
-      invalidatesTags: ["Onboarding", "Account"], // Invalidate account to get updated onboarding status
+      invalidatesTags: ["Onboarding", "Account"],
     }),
     generateUploadUrl: build.query<
       GenerateUploadUrlApiResponse,
@@ -57,7 +58,7 @@ export const {
   useGetAccountQuery,
   useGetOnboardingDetailsQuery,
   useUpdateOnboardingDetailsMutation,
-  useGenerateUploadUrlQuery,
+  useLazyGenerateUploadUrlQuery, // Export lazy query
   useGetTransactionsQuery,
   useGenerateApiKeyMutation,
 } = accountApi;

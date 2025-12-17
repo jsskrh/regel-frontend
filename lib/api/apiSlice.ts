@@ -3,6 +3,6 @@ import { baseQueryWithReauth } from "./baseQuery";
 
 export const apiSlice = createApi({
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["Contacts", "ContactLists", "Account", "Transactions", "Messages", "Campaigns", "Onboarding"],
+  tagTypes: ["Contacts", "ContactLists", "Account", "Transactions", "Messages", "Campaigns", "Onboarding", "Users"],
   endpoints: () => ({}),
 });

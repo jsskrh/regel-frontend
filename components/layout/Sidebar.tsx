@@ -66,7 +66,7 @@ const nav = [
       {
         title: "Sender IDs",
         path: "/sender-ids",
-        icon: "message-square.svg", // Placeholder icon, replace with a more suitable one if available
+        icon: "id-card.svg", // Placeholder icon, replace with a more suitable one if available
       },
     ],
   },

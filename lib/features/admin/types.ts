@@ -1,3 +1,4 @@
+import { User } from "../account/accountApi";
 
 export type UpdateActiveProviderDto = {
   /** The name of the active SMS provider */
@@ -27,3 +28,15 @@ export type CreatePermissionDto = {
   /** The subject this permission applies to (e.g., User, Campaign, Role) */
   subject: string;
 };
+
+export interface DashboardStats {
+    totalUsers: number;
+    activeUsers: number;
+    newSignups: number;
+    inactiveUsers: number;
+    totalCampaigns: number;
+    totalSmsSent: number;
+    totalFundsInSystem: number;
+}
+
+export type AdminUser = User;

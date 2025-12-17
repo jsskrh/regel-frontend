@@ -67,6 +67,7 @@ const BillingTable = () => {
         table={table}
         placeholder="Search transactions"
         button={<PaymentModal />}
+        col="reference"
       />
       <DataTable columns={columns} data={transactions} table={table} />
       <DataTablePagination table={table} />

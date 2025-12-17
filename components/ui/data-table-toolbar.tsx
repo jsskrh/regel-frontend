@@ -9,7 +9,7 @@ interface DataTableToolbarProps<TData> {
   table: Table<TData>;
   placeholder?: string;
   button?: string;
-  link: string;
+  link?: string;
   col: string;
 }
 
@@ -20,7 +20,7 @@ export function DataTableToolbar<TData>({
   buttonText = "Add",
   button,
   col = "name",
-  link,
+  link = "",
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 

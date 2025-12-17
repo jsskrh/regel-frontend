@@ -8,6 +8,7 @@ export const otpApi = apiSlice.injectEndpoints({
         method: "POST",
         body: queryArg.sendOtpDto,
       }),
+      invalidatesTags: ["Account"],
     }),
 
     verifyOtp: build.mutation<VerifyOtpApiResponse, VerifyOtpApiArg>({
