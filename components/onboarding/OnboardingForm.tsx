@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -8,7 +9,7 @@ import {
   useUpdateOnboardingDetailsMutation,
 } from "@/lib/features/account/accountApi";
 import { UpdateOnboardingDto } from "@/lib/features/account/types";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -33,10 +34,12 @@ const onboardingSchema = z.object({
 });
 
 export function OnboardingForm() {
+  const [step, setStep] = useState(1);
   const { data: onboardingDetails, isLoading: isLoadingDetails } =
     useGetOnboardingDetailsQuery();
   const [updateDetails, { isLoading: isUpdating }] =
     useUpdateOnboardingDetailsMutation();
+  const [isUploading, setIsUploading] = useState(false);
 
   const form = useForm<UpdateOnboardingDto>({
     resolver: zodResolver(onboardingSchema),
@@ -74,86 +77,74 @@ export function OnboardingForm() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="company"
-              render={({ field }) => (
+            {step === 1 && (
+              <>
+                <FormField control={form.control} name="company" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Name</FormLabel>
+                      <FormControl><Input placeholder="Your Company" {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField control={form.control} name="website" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Website</FormLabel>
+                      <FormControl><Input placeholder="https://example.com" {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField control={form.control} name="estimatedMonthlySms" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Estimated Monthly SMS</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value, 10))}/>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField control={form.control} name="samplePromotionalMessage" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Sample Promotional Message</FormLabel>
+                      <FormControl><Input {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField control={form.control} name="sampleTransactionalMessage" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Sample Transactional Message</FormLabel>
+                      <FormControl><Input {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button onClick={() => setStep(2)}>Next</Button>
+              </>
+            )}
+
+            {step === 2 && (
+              <>
                 <FormItem>
-                  <FormLabel>Company Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Your Company" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="website"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Website</FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://example.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormItem>
-                <FormLabel>CAC Document</FormLabel>
-                <FileUpload onUploadSuccess={(url) => form.setValue("cacDocumentUrl", url)} />
-                {form.watch("cacDocumentUrl") && <p className="text-sm text-green-600">Document uploaded: {form.watch("cacDocumentUrl")}</p>}
-                <FormMessage />
-            </FormItem>
-            <FormField
-              control={form.control}
-              name="samplePromotionalMessage"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Sample Promotional Message</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="sampleTransactionalMessage"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Sample Transactional Message</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="estimatedMonthlySms"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Estimated Monthly SMS</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      {...field}
-                      onChange={(e) =>
-                        field.onChange(parseInt(e.target.value, 10))
-                      }
+                    <FormLabel>CAC Document</FormLabel>
+                    <FileUpload 
+                        onUploadSuccess={(url) => form.setValue("cacDocumentUrl", url)}
+                        onUploadStart={() => setIsUploading(true)}
+                        onUploadEnd={() => setIsUploading(false)}
                     />
-                  </FormControl>
-                  <FormMessage />
+                    {form.watch("cacDocumentUrl") && <p className="text-sm text-green-600">Document uploaded: {form.watch("cacDocumentUrl")}</p>}
+                    <FormMessage />
                 </FormItem>
-              )}
-            />
-            <Button type="submit" disabled={isUpdating}>
-              {isUpdating ? "Saving..." : "Save"}
-            </Button>
+                <div className="flex justify-between">
+                    <Button variant="outline" onClick={() => setStep(1)}>Back</Button>
+                    <Button type="submit" disabled={isUpdating || isUploading}>
+                        {isUpdating ? "Saving..." : "Save"}
+                    </Button>
+                </div>
+              </>
+            )}
           </form>
         </Form>
       </CardContent>
