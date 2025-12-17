@@ -3,44 +3,52 @@
 
 import { OnboardingForm } from "@/components/onboarding/OnboardingForm";
 import PageHeader from "@/components/common/PageHeader";
-import { useGetOnboardingDetailsQuery } from "@/lib/features/account/accountApi";
+import { useGetAccountQuery } from "@/lib/features/account/accountApi";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const OnboardingPage = () => {
-    const { data: onboardingDetails, isLoading } = useGetOnboardingDetailsQuery();
+    const { data: user, isLoading } = useGetAccountQuery();
     const router = useRouter();
 
+    const isComplete = user &&
+        user.company &&
+        user.website &&
+        user.cacDocumentUrl &&
+        user.samplePromotionalMessage &&
+        user.sampleTransactionalMessage &&
+        user.estimatedMonthlySms;
+
     useEffect(() => {
-        if (onboardingDetails?.isComplete) {
+        if (isComplete) {
             router.push("/dashboard");
         }
-    }, [onboardingDetails, router]);
+    }, [isComplete, router]);
 
     const checklistItems = [
         { 
             name: "Company Profile", 
-            completed: !!(onboardingDetails?.company && onboardingDetails?.website) 
+            completed: !!(user?.company && user?.website) 
         },
         { 
             name: "Business Details", 
-            completed: !!onboardingDetails?.estimatedMonthlySms 
+            completed: !!user?.estimatedMonthlySms 
         },
         { 
             name: "Sample Messages", 
-            completed: !!(onboardingDetails?.samplePromotionalMessage && onboardingDetails?.sampleTransactionalMessage) 
+            completed: !!(user?.samplePromotionalMessage && user?.sampleTransactionalMessage) 
         },
         { 
             name: "CAC Document", 
-            completed: !!onboardingDetails?.cacDocumentUrl 
+            completed: !!user?.cacDocumentUrl 
         },
     ];
 
     const completedSteps = checklistItems.filter(item => item.completed).length;
     const totalSteps = checklistItems.length;
 
-    if (isLoading || onboardingDetails?.isComplete) {
-        return <p>Loading or redirecting...</p>; // Show loading/redirecting state
+    if (isLoading || isComplete) {
+        return <p>Loading or redirecting...</p>;
     }
 
     return (
