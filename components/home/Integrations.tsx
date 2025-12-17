@@ -17,7 +17,7 @@ const Integrations = () => {
             Enjoy seamless connectivity by having access to over 100+ networks
             via our sms platform
           </p>
-          <Link href="/signup">
+          <Link href="/register">
             <Button
               className="font-bold text-xl leading-6 tracking-[-5%] gap-0.5 border-white"
               variant="outline"

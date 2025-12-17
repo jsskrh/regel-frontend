@@ -36,7 +36,7 @@ const Intro = () => {
           </div>
         </div>
 
-        <Link href="/signup">
+        <Link href="/register">
           <Button
             className="font-bold text-2xl leading-6 tracking-[-5%] gap-0.5"
             variant="primary"

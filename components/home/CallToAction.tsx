@@ -68,7 +68,7 @@ const CallToAction = () => {
         </div>
         {/* </div> */}
 
-        <Link href="/signup" className="max-lg:mt-13">
+        <Link href="/register" className="max-lg:mt-13">
           <Button
             className="font-bold text-2xl leading-6 tracking-[-5%] gap-0.5"
             variant="primary"
