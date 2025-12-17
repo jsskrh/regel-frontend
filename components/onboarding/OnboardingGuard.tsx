@@ -1,30 +1,34 @@
 "use client";
 
-import { useGetOnboardingDetailsQuery } from "@/lib/features/account/accountApi";
+import { useGetAccountQuery } from "@/lib/features/account/accountApi";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export function OnboardingGuard({ children }: { children: React.ReactNode }) {
-  const { data: onboardingDetails, isLoading, isSuccess } = useGetOnboardingDetailsQuery();
+  const { data: user, isLoading, isSuccess } = useGetAccountQuery();
   const router = useRouter();
 
+  const isComplete = user &&
+    user.company &&
+    user.website &&
+    user.cacDocumentUrl &&
+    user.samplePromotionalMessage &&
+    user.sampleTransactionalMessage &&
+    user.estimatedMonthlySms;
+
   useEffect(() => {
-    // Wait until the query is successful and then check the status
-    if (isSuccess && onboardingDetails && !onboardingDetails.isComplete) {
+    if (isSuccess && !isComplete) {
       router.push("/onboarding");
     }
-  }, [isSuccess, onboardingDetails, router]);
+  }, [isSuccess, isComplete, router]);
 
-  // If loading, show a loading indicator
   if (isLoading) {
     return <p>Loading onboarding status...</p>;
   }
 
-  // If the query is successful and onboarding is complete, show the children
-  if (isSuccess && onboardingDetails?.isComplete) {
+  if (isSuccess && isComplete) {
     return <>{children}</>;
   }
   
-  // In other cases (e.g., redirecting), show a loading/placeholder message
   return <p>Verifying onboarding status...</p>;
 }

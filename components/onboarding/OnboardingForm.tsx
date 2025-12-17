@@ -1,11 +1,10 @@
-
 "use client";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
-  useGetOnboardingDetailsQuery,
+  useGetAccountQuery,
   useUpdateOnboardingDetailsMutation,
 } from "@/lib/features/account/accountApi";
 import { UpdateOnboardingDto } from "@/lib/features/account/types";
@@ -35,8 +34,7 @@ const onboardingSchema = z.object({
 
 export function OnboardingForm() {
   const [step, setStep] = useState(1);
-  const { data: onboardingDetails, isLoading: isLoadingDetails } =
-    useGetOnboardingDetailsQuery();
+  const { data: user, isLoading: isLoadingDetails } = useGetAccountQuery();
   const [updateDetails, { isLoading: isUpdating }] =
     useUpdateOnboardingDetailsMutation();
   const [isUploading, setIsUploading] = useState(false);
@@ -54,10 +52,10 @@ export function OnboardingForm() {
   });
 
   useEffect(() => {
-    if (onboardingDetails) {
-      form.reset(onboardingDetails);
+    if (user) {
+      form.reset(user);
     }
-  }, [onboardingDetails, form]);
+  }, [user, form]);
 
   const onSubmit = async (data: UpdateOnboardingDto) => {
     try {

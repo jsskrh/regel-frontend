@@ -1,7 +1,25 @@
-
 import { apiSlice } from "../../api/apiSlice";
-import { UpdateOnboardingDto, OnboardingDetails, Transaction } from "./types";
-import { User } from "./accountApi";
+import { UpdateOnboardingDto } from "./types";
+import { Transaction } from "../payments/types";
+import { PaginatedResponse } from "@/lib/utils/types";
+
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  balance: number;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  role: string;
+  apiKeyId?: string;
+  company?: string;
+  website?: string;
+  cacDocumentUrl?: string;
+  samplePromotionalMessage?: string;
+  sampleTransactionalMessage?: string;
+  estimatedMonthlySms?: number;
+}
 
 export interface GetTransactionsApiResponse {
     data: Transaction[];
@@ -14,7 +32,7 @@ export const accountApi = apiSlice.injectEndpoints({
       query: () => ({ url: `/account/profile` }),
       providesTags: ["Account"],
     }),
-    getOnboardingDetails: build.query<OnboardingDetails, void>({
+    getOnboardingDetails: build.query<User, void>({
       query: () => ({ url: `/account/onboarding` }),
       providesTags: ["Onboarding"],
     }),
@@ -58,14 +76,14 @@ export const {
   useGetAccountQuery,
   useGetOnboardingDetailsQuery,
   useUpdateOnboardingDetailsMutation,
-  useLazyGenerateUploadUrlQuery, // Export lazy query
+  useLazyGenerateUploadUrlQuery,
   useGetTransactionsQuery,
   useGenerateApiKeyMutation,
 } = accountApi;
 
 export type GetAccountApiResponse = User;
 export type GetAccountApiArg = void;
-export type GetOnboardingDetailsApiResponse = OnboardingDetails;
+export type GetOnboardingDetailsApiResponse = User;
 export type GetOnboardingDetailsApiArg = void;
 export type UpdateOnboardingDetailsApiResponse = unknown;
 export type UpdateOnboardingDetailsApiArg = {

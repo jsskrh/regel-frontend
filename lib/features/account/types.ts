@@ -1,4 +1,3 @@
-
 export interface Transaction {
     _id: string;
     userId: string;
@@ -8,16 +7,6 @@ export interface Transaction {
     amount: number;
     createdAt: string;
   }
-
-export interface OnboardingDetails {
-    company?: string;
-    website?: string;
-    cacDocumentUrl?: string;
-    samplePromotionalMessage?: string;
-    sampleTransactionalMessage?: string;
-    estimatedMonthlySms?: number;
-    isComplete: boolean; // Assuming there is a flag for completion
-}
 
 export type UpdateOnboardingDto = {
     company?: string;
