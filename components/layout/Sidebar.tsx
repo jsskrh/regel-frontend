@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetAccountQuery, User } from "@/lib/features/account/accountApi";
+import { useGetAccountQuery } from "@/lib/features/account/accountApi";
 import { useFindAllRolesQuery, Role } from "@/lib/features/admin/adminApi";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,13 +9,22 @@ import { usePathname } from "next/navigation";
 const nav = [
   {
     title: "",
+    items: [{ title: "Home", path: "/dashboard", icon: "home.svg" }],
+  },
+  {
+    title: "Admin",
     items: [
-      { title: "Home", path: "/dashboard", icon: "home.svg" },
       {
         title: "Users",
         path: "/admin/users",
         icon: "user-group.svg",
-        role: "admin", // The role name to compare against
+        role: "admin",
+      },
+      {
+        title: "Sender ID Requests",
+        path: "/admin/sender-ids",
+        icon: "id-card.svg",
+        role: "admin",
       },
     ],
   },
@@ -66,7 +75,7 @@ const nav = [
       {
         title: "Sender IDs",
         path: "/sender-ids",
-        icon: "id-card.svg", // Placeholder icon, replace with a more suitable one if available
+        icon: "id-card.svg",
       },
     ],
   },
@@ -104,14 +113,22 @@ const Sidebar = () => {
     isLoading: isUserLoading,
     error: userError,
   } = useGetAccountQuery();
+  console.log(user);
+
+  // Determine if user has a role that might be admin
+  // Only fetch roles if user has a role field (could be admin)
+  const shouldFetchRoles = user && user.role;
+
   const {
     data: roles,
     isLoading: isRolesLoading,
     error: rolesError,
-  } = useFindAllRolesQuery();
+  } = useFindAllRolesQuery(undefined, { skip: !shouldFetchRoles });
+
   const pathname = usePathname();
 
   // Find the role name for the current user based on the role ID
+  // If roles query was skipped or failed, assume user is not admin
   const userRoleName = roles?.find(
     (role: Role) => role._id === user?.role
   )?.name;
@@ -121,7 +138,7 @@ const Sidebar = () => {
       ...section,
       items: section.items.filter((item) => {
         if (item.role) {
-          // Compare with role name
+          // Compare with role name - only show if user has matching role
           return userRoleName === item.role;
         }
         return true;
@@ -129,8 +146,15 @@ const Sidebar = () => {
     }))
     .filter((section) => section.items.length > 0);
 
-  if (isUserLoading || isRolesLoading) return <p>Loading sidebar...</p>;
-  if (userError || rolesError) return <p>Error loading user data or roles.</p>;
+  // Only show loading if user is loading, or if we're fetching roles for a user with a role
+  if (isUserLoading || (shouldFetchRoles && isRolesLoading)) {
+    return <p>Loading sidebar...</p>;
+  }
+
+  // Only show error for user loading errors, ignore roles errors for normal users
+  if (userError) {
+    return <p>Error loading user data.</p>;
+  }
 
   return (
     <div className="relative sr-only lg:not-sr-only bg-[#F9FBFC] border-r border-[#EDF2F7]">

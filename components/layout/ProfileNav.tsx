@@ -17,6 +17,7 @@ import { useGetAccountQuery } from "@/lib/features/account/accountApi";
 import { useLogoutMutation } from "@/lib/features/auth/authApi";
 import { useDispatch } from "react-redux";
 import { logout } from "@/lib/features/auth/authSlice";
+import { apiSlice } from "@/lib/api/apiSlice";
 
 const menuItems = [
   {
@@ -42,8 +43,9 @@ export function ProfileNav() {
 
   const handleLogout = async () => {
     try {
-      await logoutMutation().unwrap();
+      await logoutMutation({}).unwrap();
       dispatch(logout());
+      dispatch(apiSlice.util.resetApiState());
       router.push("/login");
     } catch (err) {
       console.error("Failed to logout: ", err);
