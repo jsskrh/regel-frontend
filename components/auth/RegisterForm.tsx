@@ -43,7 +43,7 @@ const signupSchema = z
     phoneNumber: z
       .string()
       .regex(
-        /^\\+\d{13}$/,
+        /^\+\d{13}$/,
         "Phone number must be in E.164 format (e.g., +2348012345678)"
       ),
     terms: z
