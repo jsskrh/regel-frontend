@@ -1,11 +1,21 @@
+
 "use client";
 
 import { OnboardingForm } from "@/components/onboarding/OnboardingForm";
 import PageHeader from "@/components/common/PageHeader";
 import { useGetOnboardingDetailsQuery } from "@/lib/features/account/accountApi";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const OnboardingPage = () => {
     const { data: onboardingDetails, isLoading } = useGetOnboardingDetailsQuery();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (onboardingDetails?.isComplete) {
+            router.push("/dashboard");
+        }
+    }, [onboardingDetails, router]);
 
     const checklistItems = [
         { 
@@ -29,8 +39,8 @@ const OnboardingPage = () => {
     const completedSteps = checklistItems.filter(item => item.completed).length;
     const totalSteps = checklistItems.length;
 
-    if (isLoading) {
-        return <p>Loading onboarding status...</p>;
+    if (isLoading || onboardingDetails?.isComplete) {
+        return <p>Loading or redirecting...</p>; // Show loading/redirecting state
     }
 
     return (
