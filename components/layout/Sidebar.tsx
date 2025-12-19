@@ -95,7 +95,7 @@ const nav = [
       },
       {
         title: "Documentation",
-        path: "/docs/api",
+        path: "/developer/docs",
         icon: "receipt.svg",
       },
       {
