@@ -87,7 +87,7 @@ const nav = [
         path: "/billing",
         icon: "receipt.svg",
       },
-      { title: "Settings", path: "/dashboard", icon: "settings.svg" },
+      { title: "Settings", path: "/settings", icon: "settings.svg" },
       {
         title: "API keys",
         path: "/developer/api-key",

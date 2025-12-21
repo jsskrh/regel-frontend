@@ -1,11 +1,16 @@
+
 export interface Transaction {
     _id: string;
     userId: string;
-    status: string;
-    reference: string;
-    currency: string;
+    type: "DEBIT" | "CREDIT";
     amount: number;
+    status: string;
+    description: string;
+    reference: string;
+    gateway: string;
     createdAt: string;
+    updatedAt: string;
+    __v: number;
   }
 
 export type UpdateOnboardingDto = {
@@ -15,4 +20,14 @@ export type UpdateOnboardingDto = {
     samplePromotionalMessage?: string;
     sampleTransactionalMessage?: string;
     estimatedMonthlySms?: number;
+};
+
+export type UpdateProfileDto = {
+    name?: string;
+    company?: string;
+};
+
+export type ChangePasswordDto = {
+    currentPassword: string;
+    newPassword: string;
 };

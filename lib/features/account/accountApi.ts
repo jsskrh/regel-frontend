@@ -1,6 +1,6 @@
+
 import { apiSlice } from "../../api/apiSlice";
-import { UpdateOnboardingDto } from "./types";
-import { Transaction } from "../payments/types";
+import { UpdateOnboardingDto, Transaction, UpdateProfileDto, ChangePasswordDto } from "./types";
 import { PaginatedResponse } from "@/lib/utils/types";
 
 export interface User {
@@ -69,6 +69,21 @@ export const accountApi = apiSlice.injectEndpoints({
     >({
       query: () => ({ url: `/account/api-key`, method: "POST" }),
     }),
+    updateProfile: build.mutation<void, { updateProfileDto: UpdateProfileDto }>({
+      query: (queryArg) => ({
+        url: `/account/profile`,
+        method: "PATCH",
+        body: queryArg.updateProfileDto,
+      }),
+      invalidatesTags: ["Account"],
+    }),
+    changePassword: build.mutation<void, { changePasswordDto: ChangePasswordDto }>({
+      query: (queryArg) => ({
+        url: `/account/change-password`,
+        method: "POST",
+        body: queryArg.changePasswordDto,
+      }),
+    }),
   }),
 });
 
@@ -79,6 +94,8 @@ export const {
   useLazyGenerateUploadUrlQuery,
   useGetTransactionsQuery,
   useGenerateApiKeyMutation,
+  useUpdateProfileMutation,
+  useChangePasswordMutation,
 } = accountApi;
 
 export type GetAccountApiResponse = User;
