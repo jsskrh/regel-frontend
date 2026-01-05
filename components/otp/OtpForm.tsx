@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -18,12 +17,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { SuccessfulPopup } from "@/components/SuccessfulPopup"; // Import the new popup component
+import { SuccessfulPopup } from "@/components/SuccessfulPopup";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useGetAccountQuery } from "@/lib/features/account/accountApi"; // To get balance
+import { useGetAccountQuery } from "@/lib/features/account/accountApi";
 
-const PER_OTP_COST = 8; // Assuming 8 naira per SMS
+const PER_OTP_COST = 6;
 
 const otpSchema = z.object({
   phoneNumber: z
