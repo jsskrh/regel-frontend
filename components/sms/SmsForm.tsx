@@ -41,13 +41,18 @@ const singleSmsSchema = z.object({
   message: z.string().min(1, "Message is required."),
 });
 
-const campaignSchema = z.object({
-  name: z.string().min(1, "Campaign name is required."),
-  from: z.string().optional(),
-  message: z.string().min(1, "Message is required."),
-  contactListId: z.string().optional(),
-  phoneNumbers: z.string().optional(), // Textarea for comma-separated numbers
-});
+const campaignSchema = z
+  .object({
+    name: z.string().min(1, "Campaign name is required."),
+    from: z.string().optional(),
+    message: z.string().min(1, "Message is required."),
+    contactListId: z.string().optional(),
+    phoneNumbers: z.string().optional(), // Textarea for comma-separated numbers
+  })
+  .refine((data) => data.contactListId || data.phoneNumbers, {
+    message: "Either select a contact list or enter phone numbers.",
+    path: ["contactListId"],
+  });
 
 export function SmsForm() {
   const [activeTab, setActiveTab] = useState("single");
@@ -86,7 +91,8 @@ export function SmsForm() {
       const manualRecipients =
         campaignRecipients?.split(",").filter(Boolean).length || 0;
       const list = contactLists.find((cl) => cl._id === campaignContactList);
-      const listRecipients = list?.contacts.length || 0;
+      // @ts-expect-error - API might return contactIds instead of contacts
+      const listRecipients = list?.contacts?.length || list?.contactIds?.length || 0;
       setSmsCost((manualRecipients + listRecipients) * PER_SMS_COST);
     }
   }, [activeTab, campaignRecipients, campaignContactList, contactLists]);
@@ -97,24 +103,37 @@ export function SmsForm() {
       toast.success("SMS sent successfully!");
       singleSmsForm.reset();
     } catch (error) {
-      toast.error(error.data?.message || "Failed to send SMS.");
+        // @ts-expect-error - API might return contactIds instead of contacts
+      toast.error(error?.data?.message || "Failed to send SMS.");
     }
   };
 
   const onCampaignSubmit = async (data: z.infer<typeof campaignSchema>) => {
     try {
-      const phoneNumbers =
+      const phoneNumbersArray =
         data.phoneNumbers
           ?.split(",")
           .map((s) => s.trim())
           .filter(Boolean) || [];
+
+      const createDto = {
+        name: data.name,
+        from: data.from,
+        message: data.message,
+        ...(data.contactListId ? { contactListId: data.contactListId } : {}),
+        ...(phoneNumbersArray.length > 0
+          ? { phoneNumbers: phoneNumbersArray }
+          : {}),
+      };
+
       await createCampaign({
-        createCampaignDto: { ...data, phoneNumbers },
+        createCampaignDto: createDto,
       }).unwrap();
       toast.success("Campaign created successfully!");
       campaignForm.reset();
     } catch (error) {
-      toast.error(error.data?.message || "Failed to create campaign.");
+        // @ts-expect-error - API might return contactIds instead of contacts
+      toast.error(error?.data?.message || "Failed to create campaign.");
     }
   };
 

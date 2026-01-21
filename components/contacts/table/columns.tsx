@@ -36,11 +36,14 @@ export const columns: ColumnDef<Contact>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Name" />
     ),
-    cell: ({ row }) => (
-      <div className="text-[#101928] text-sm leading-[145%]">
-        {row.original.firstName} {row.original.lastName}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const fullName = `${row.original.firstName || ""} ${row.original.lastName || ""}`.trim();
+      return (
+        <div className="text-[#101928] text-sm leading-[145%]">
+          {fullName || "N/A"}
+        </div>
+      );
+    },
     enableSorting: true,
     enableHiding: false,
   },

@@ -63,10 +63,14 @@ const GroupForm = ({ groupId }: { groupId?: string }) => {
     }
   }, [groupData, form, isEdit]);
 
-  const contactOptions = contactsData?.map((contact) => ({
-    label: `${contact.firstName} ${contact.lastName}`,
-    value: contact._id,
-  })) || [];
+  const contactOptions =
+    contactsData?.map((contact) => {
+      const fullName = `${contact.firstName || ""} ${contact.lastName || ""}`.trim();
+      return {
+        label: fullName || contact.phoneNumber,
+        value: contact._id,
+      };
+    }) || [];
 
   const onSubmit = async (data: z.infer<typeof groupSchema>) => {
     try {
