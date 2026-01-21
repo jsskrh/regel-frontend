@@ -5,7 +5,8 @@ import {
   UpdateContactListDto,
   CreateContactDto,
   UpdateContactDto,
-  Contact
+  Contact,
+  CreateBulkContactsDto,
 } from "./types";
 
 export interface ContactList {
@@ -112,6 +113,18 @@ export const contactsApi = apiSlice.injectEndpoints({
       invalidatesTags: ["Contacts"],
     }),
 
+    createBulkContacts: build.mutation<
+      CreateBulkContactsApiResponse,
+      CreateBulkContactsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/contacts/bulk`,
+        method: "POST",
+        body: queryArg.createBulkContactsDto,
+      }),
+      invalidatesTags: ["Contacts"],
+    }),
+
     findContactById: build.query<
       FindContactByIdApiResponse,
       FindContactByIdApiArg
@@ -154,6 +167,7 @@ export const {
   useDeleteContactListMutation,
   useFindAllContactsQuery,
   useCreateContactMutation,
+  useCreateBulkContactsMutation,
   useFindContactByIdQuery,
   useUpdateContactMutation,
   useDeleteContactMutation,
@@ -193,6 +207,10 @@ export type FindAllContactsApiArg = void;
 export type CreateContactApiResponse = unknown;
 export type CreateContactApiArg = {
   createContactDto: CreateContactDto;
+};
+export type CreateBulkContactsApiResponse = unknown;
+export type CreateBulkContactsApiArg = {
+  createBulkContactsDto: CreateBulkContactsDto;
 };
 export type FindContactByIdApiResponse = unknown;
 export type FindContactByIdApiArg = {

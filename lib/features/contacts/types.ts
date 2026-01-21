@@ -36,6 +36,10 @@ export type CreateContactDto = {
     /** The last name of the contact (optional) */
     lastName?: string;
 };
+export type CreateBulkContactsDto = {
+    /** Array of contacts to create */
+    contacts: CreateContactDto[];
+};
 export type UpdateContactDto = {
     /** The new phone number of the contact in E.164 format (optional) */
     phoneNumber?: string;
