@@ -23,13 +23,13 @@ export function FileUpload({ onUploadSuccess, onUploadStart, onUploadEnd }: File
       toast.error("Could not determine file type. Please select a valid file.");
       return;
     }
-    
+
     onUploadStart?.();
 
     try {
-      // 1. Get pre-signed URL
+      const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
       const { signedUrl, finalFileUrl } = await generateUploadUrl({
-        fileName: file.name,
+        fileName: sanitizedFileName,
         fileType: file.type,
       }).unwrap();
 
@@ -56,7 +56,7 @@ export function FileUpload({ onUploadSuccess, onUploadStart, onUploadEnd }: File
     } catch (error) {
       toast.error(error.message || "An error occurred during file upload.");
     } finally {
-        onUploadEnd?.();
+      onUploadEnd?.();
     }
   };
 
